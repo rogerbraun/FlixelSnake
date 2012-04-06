@@ -7,6 +7,7 @@ package {
     private var _speed:Number;
     
     public function Snake(movesPerSecond:Number = 1) { 
+      super();
 
       _speed = 1 / movesPerSecond;
       _timer = 0;
