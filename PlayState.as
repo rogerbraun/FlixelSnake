@@ -7,29 +7,26 @@ package {
     [Embed(source='assets/images/shell.png')] protected var Shell:Class;
   
     private var _snake:Snake;
-    private var _food:FlxGroup;
-    private var _oneFood:FlxSprite;
+    private var _food:FlxSprite;
     private var _shells:FlxEmitter;
     
     override public function create():void {
     
       _snake = new Snake(2);
-      _food = initialFood();
+      _food = new FlxSprite(16*5,16*5).makeGraphic(16,16,0xff00ff00);
 
       _shells = new FlxEmitter();
       _shells.makeParticles(Shell,4);
 
-      _oneFood = _food.members[0];
-
       add(_snake);
-      add(_oneFood);
+      add(_food);
       add(_shells);
       
     }
 
     override public function update():void {
-      FlxG.overlap(_snake.head(), _oneFood, eat);
       super.update();
+      FlxG.overlap(_snake.head(), _food, eat);
     }
 
     private function eat(snakeHead:FlxSprite, food:FlxSprite):void {
@@ -39,13 +36,5 @@ package {
       food.kill();
     }
 
-    private function initialFood():FlxGroup{
-      var group:FlxGroup = new FlxGroup;
-      var food:FlxSprite = new FlxSprite(16*5,16*5);
-      food.makeGraphic(16,16,0xff00ff00);//loadGraphic(Egg);
-      group.add(food);
-      return group;
-    }
-     
   }
 }
