@@ -35,8 +35,7 @@ package {
 
     private function resurrect():void {
       _body.clear();
-      _head.x = 160;
-      _head.y = 160;
+      _head.reset(160, 160);
       _head.facing = FlxObject.RIGHT;
       fillBody(_body);
       _mps = 8;
@@ -80,10 +79,9 @@ package {
         _newPart = null;
       }  
 
-      for(var i:int = _body.members.length - 1 ; i >= 0; i--){
+      for(var i:int = _body.length - 1 ; i >= 0; i--){
         var part:FlxSprite;
         part = _body.members[i];
-        if(part) {
           if(i == 0){
             part.x = _head.x;
             part.y = _head.y; 
@@ -91,7 +89,6 @@ package {
             part.x = _body.members[i - 1].x;
             part.y = _body.members[i - 1].y;
           }
-        }
       }
 
       var xSpeed:int = 0;
