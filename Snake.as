@@ -2,13 +2,13 @@ package {
   import org.flixel.*;
 
   public class Snake extends FlxGroup {
-    private var _head:FlxSprite;
-    private var _body:FlxGroup;
-    private var _timer:Number;
-    private var _speed:Number;
-    private var _mps:Number;
-    private var _newPart:FlxSprite;
-    private var _lives:int = 3;
+    protected var _head:FlxSprite;
+    protected var _body:FlxGroup;
+    protected var _timer:Number;
+    protected var _speed:Number;
+    protected var _mps:Number;
+    protected var _newPart:FlxSprite;
+    protected var _lives:int = 3;
 
     public function Snake(movesPerSecond:Number = 1, length:int = 5, blockSize:int = 16, startX:int = 160, startY:int = 160) { 
       super();
@@ -71,7 +71,7 @@ package {
       _newPart.makeGraphic(blockSize, blockSize, color);
     }
 
-    private function move():void {
+    protected function move():void {
       if(_newPart){ 
         _body.add(_newPart);
         _newPart = null;
