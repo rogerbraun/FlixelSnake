@@ -16,6 +16,7 @@ package {
     private var _score:int;
     private var _map:FlxTilemap;
     private var _level:FlxGroup;
+    private var _point:FlxText;
     
     override public function create():void {
 
@@ -62,6 +63,7 @@ package {
       _hud.text = "Hi, " + FlxKongregate.getUserName +"! Score: " + String(_score) + "\nLives: " + String(_snake.lives);
       _hud.y = ((64 - _hud.height) / 2) + 16;
     }
+
 
     override public function update():void {
       super.update();

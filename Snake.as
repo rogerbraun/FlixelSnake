@@ -9,36 +9,34 @@ package {
     private var _mps:Number;
     private var _newPart:FlxSprite;
     private var _lives:int = 3;
-    
-    public function Snake(movesPerSecond:Number = 1) { 
+
+    public function Snake(movesPerSecond:Number = 1, length:int = 5, blockSize:int = 16, startX:int = 160, startY:int = 160) { 
       super();
 
-      _mps = movesPerSecond;
-      _speed = 1 / _mps;
       _timer = 0;
 
-      _head = new FlxSprite(16 * 10, 16 * 10);
-      _head.makeGraphic(16,16);
+      _head = new FlxSprite(startX, startY);
+      _head.makeGraphic(blockSize, blockSize);
 
       _body = new FlxGroup();
 
-      resurrect();
+      resurrect(movesPerSecond, blockSize, length, startX, startY);
 
       add(_head);
       add(_body);
     }
-
+    
     public function die():void {
       alive = false;
       _lives--;
     }
 
-    private function resurrect():void {
+    private function resurrect(movesPerSecond:Number = 8, blockSize:int = 16, length:int = 5, startX:int = 160, startY:int = 160):void {
       _body.clear();
-      _head.reset(160, 160);
+      _head.reset(startX, startY);
       _head.facing = FlxObject.RIGHT;
-      fillBody(_body);
-      _mps = 8;
+      fillBody(blockSize, length);
+      _mps = movesPerSecond;
       _speed = 1 / _mps;
       alive = true;
     }
@@ -58,19 +56,19 @@ package {
       _speed = 1 / _mps;
     }
 
-    private function fillBody(group:FlxGroup):void {
+    private function fillBody(blockSize:int, length:int):void {
       var i:int;
-      for(i = 1; i <= 4; i++){
+      for(i = 1; i <= length - 1; i++){
         var part:FlxSprite;
-        part = new FlxSprite(_head.x - (i * 16), _head.y);
-        part.makeGraphic(16,16);
-        group.add(part);
+        part = new FlxSprite(_head.x - (i * blockSize), _head.y);
+        part.makeGraphic(blockSize, blockSize);
+        _body.add(part);
       } 
     }
 
-    public function swallow():void {
+    public function swallow(blockSize:int = 16, color:uint = 0xff00ff00):void {
       _newPart = new FlxSprite();
-      _newPart.makeGraphic(16,16, 0xff00ff00);
+      _newPart.makeGraphic(blockSize, blockSize, color);
     }
 
     private function move():void {
@@ -96,16 +94,16 @@ package {
       
       switch(_head.facing) {
         case FlxObject.RIGHT:
-            xSpeed = 16;
+            xSpeed = _head.width;
           break;
         case FlxObject.LEFT:
-            xSpeed = -16;
+            xSpeed = _head.width * -1;
           break;
         case FlxObject.UP:
-            ySpeed = -16;
+            ySpeed = _head.height * -1;
           break;
         case FlxObject.DOWN:
-            ySpeed = 16;
+            ySpeed = _head.height;
           break;
       }
 
@@ -147,6 +145,8 @@ package {
         _timer -= _speed;
       }
     }
+
+
+
   }
-  
 }

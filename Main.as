@@ -7,6 +7,7 @@ package {
     public function Main() {
       super(640, 480, MenuState);
       forceDebugger = true;
+      trace("Hallo Jiayi");
     }
   }
 }
