@@ -4,20 +4,18 @@ package {
   
   public class PlayState extends FlxState {
 
-    [Embed(source='assets/images/egg.png')] protected var Egg:Class;
-    [Embed(source='assets/images/shell.png')] protected var Shell:Class;
+    [Embed(source='assets/images/egg.png')] protected var Egg1:Class;
+    [Embed(source='assets/images/shell.png')] protected var Shell1:Class;
     [Embed(source='map/level.png')] protected var LevelTiles:Class;
     [Embed(source='map/level.csv', mimeType='application/octet-stream')] protected var LevelCSV:Class;
   
     private var _snake:Snake;
     private var _food:FlxGroup;
-    private var _shells:FlxEmitter;
     private var _hud:FlxText;
+    private var _pointHud:Tween;
     private var _score:int;
     private var _map:FlxTilemap;
     private var _level:FlxGroup;
-    private var _point:FlxText;
-    
     override public function create():void {
 
       FlxG.log("Starting game");
@@ -33,10 +31,8 @@ package {
       
       _snake = new Snake(8);
 
-      _food = initialFood();
-
-      _shells = new FlxEmitter();
-      _shells.makeParticles(Shell,4);
+      _food = new FlxGroup();
+      addFood();
 
       _hud = new FlxText(32,32,400,'0');
       _hud.size = 16;
@@ -44,7 +40,6 @@ package {
       add(_level);
       add(_snake);
       add(_food);
-      add(_shells);
       add(_hud);
 
       FlxKongregate.init(apiHasLoaded);
@@ -85,12 +80,29 @@ package {
       FlxG.collide(_snake.head, _level, hitBoundary);
     }
 
-    private function eat(snakeHead:FlxSprite, food:FlxSprite):void {
+
+    private function initPointHUD(egg:Egg):void{
+      var points:int = egg.points;
+      _pointHud = new Tween(0.5, 20, egg.x, egg.y, 40, points.toString());
+      add(_pointHud); 
+      
+    }
+
+    private function eat(snakeHead:FlxSprite, egg:Egg):void {
       FlxG.log("Eating at " + snakeHead.x + ", " + snakeHead.y);
-      randomPlace(food);
       FlxG.shake();
-      _shells.at(snakeHead);
-      _shells.start(true, 3);
+
+      var shells:FlxEmitter = egg.shells;
+      shells.at(snakeHead);
+      shells.start(true, 3);
+
+      initPointHUD(egg);
+    
+      _food.remove(egg);
+      egg.kill();
+
+      addFood();
+
       _snake.faster();
       _snake.swallow();
       _score++;
@@ -101,24 +113,11 @@ package {
       _snake.die(); 
     }
 
-    private function randomPlace(food:FlxSprite):void{
-      var wTiles:int = FlxG.width / 16;
-      var hTiles:int = FlxG.height / 16;
-      wTiles -= 2; // Left and right;
-      hTiles -= 7; // 6 top, 1 bottom;
-      do {
-        food.x = int(1 + (Math.random() * wTiles)) * 16;
-        food.y = int(6 + (Math.random() * hTiles)) * 16;
-      } while(food.overlaps(_snake.head));
-    }
+    private function addFood():void{
+      var egg:Egg = new Egg(Egg1, Shell1);
+      egg.randomPlace(_snake);
 
-    private function initialFood():FlxGroup{
-      var group:FlxGroup = new FlxGroup;
-      var food:FlxSprite = new FlxSprite(16*5,16*5);
-      food.loadGraphic(Egg);
-      randomPlace(food);
-      group.add(food);
-      return group;
+      _food.add(egg);
     }
      
   }
